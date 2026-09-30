@@ -54,23 +54,23 @@
   };
   S.pearls = svg(`<path d="M50 6L27 33M50 6L73 33" stroke="#c9a8f5" stroke-width="2"/><circle cx="50" cy="6" r="3.5" fill="none" stroke="#c9a8f5" stroke-width="2.2"/>` +
     [[36, 5], [43, 6], [50, 6], [57, 6], [64, 5]].map(([x, n]) => strand(x, n)).join('') +
-    `<path d="M28 34L72 34L66 56Q65 60 60 60L40 60Q35 60 34 56Z" fill="#c29af2"/><rect x="24" y="30" width="52" height="9" rx="4.5" fill="#d8c0ff"/>` + face(50, 48, 0.72));
+    `<path d="M28 34L72 34L66 56Q65 60 60 60L40 60Q35 60 34 56Z" fill="#c29af2"/><rect x="24" y="30" width="52" height="9" rx="4.5" fill="#d8c0ff"/>` + face(50, 48.5, 0.8));
 
   S.bonsai = svg(`<path d="M47 72C40 60 58 54 50 42C45 34 51 28 57 22" stroke="#8a5a3c" stroke-width="7" fill="none" stroke-linecap="round"/>
     <path d="M50 50C60 48 66 45 72 38M48 58C38 56 32 52 27 46" stroke="#8a5a3c" stroke-width="4" fill="none" stroke-linecap="round"/>
     ${[[57, 19, 12], [73, 34, 10], [26, 42, 10], [42, 29, 9]].map(([x, y, r]) => `<circle cx="${x - r * 0.6}" cy="${y + 2}" r="${r * 0.75}" fill="#3f9e5a"/><circle cx="${x + r * 0.6}" cy="${y + 2}" r="${r * 0.75}" fill="#3f9e5a"/><circle cx="${x}" cy="${y - 2}" r="${r * 0.85}" fill="#57b870"/><circle cx="${x - 2}" cy="${y - 4}" r="${r * 0.35}" fill="#8fe0a6"/>`).join('')}
     ${[[52, 14], [66, 22], [78, 30], [20, 40], [34, 44], [46, 24], [62, 12]].map(([x, y]) => `<circle cx="${x}" cy="${y}" r="2.2" fill="#ff9ecf"/>`).join('')}
-    <rect x="12" y="70" width="76" height="9" rx="4.5" fill="#a57ff5"/><path d="M17 78L83 78L79 90Q78 93 74 93L26 93Q22 93 21 90Z" fill="#7a4bd0"/>` +
-    face(50, 85, 0.7) + star4(10, 14, 6, '#fff3c4') + star4(90, 60, 5, '#fff3c4') + star4(88, 10, 4, '#fff'));
+    <path d="M17 71L83 71L79 92Q78 96 74 96L26 96Q22 96 21 92Z" fill="#7a4bd0"/><rect x="12" y="64" width="76" height="10" rx="5" fill="#a57ff5"/>` +
+    face(50, 83.5, 0.82) + star4(10, 14, 6, '#fff3c4') + star4(90, 60, 5, '#fff3c4') + star4(88, 10, 4, '#fff'));
 
   Object.assign(ITEMS, {
-    snake:  { name: 'Snake Plant',      size: 80, body: 'circle', r: 37, pts: 10, refund: 1 },
-    cactus: { name: 'Blooming Cactus',  size: 80, body: 'circle', r: 37, pts: 10, refund: 1 },
-    orchid: { name: 'Moth Orchid',      size: 82, body: 'circle', r: 39, pts: 10, refund: 1 },
-    fern:   { name: 'Boston Fern',      size: 82, body: 'circle', r: 39, pts: 10, refund: 1 },
-    aloe:   { name: 'Aloe Vera',        size: 80, body: 'circle', r: 38, pts: 10, refund: 1 },
-    pearls: { name: 'String of Pearls', size: 80, body: 'circle', r: 37, pts: 10, refund: 1 },
-    bonsai: { name: 'Blossom Bonsai',   size: 88, body: 'circle', r: 41, pts: 100, refund: 3, rare: true },
+    snake:  { name: 'Snake Plant',      size: 114, body: 'circle', r: 53, pts: 10, refund: 1 },
+    cactus: { name: 'Blooming Cactus',  size: 114, body: 'circle', r: 53, pts: 10, refund: 1 },
+    orchid: { name: 'Moth Orchid',      size: 116, body: 'circle', r: 55, pts: 10, refund: 1 },
+    fern:   { name: 'Boston Fern',      size: 116, body: 'circle', r: 55, pts: 10, refund: 1 },
+    aloe:   { name: 'Aloe Vera',        size: 114, body: 'circle', r: 54, pts: 10, refund: 1 },
+    pearls: { name: 'String of Pearls', size: 114, body: 'circle', r: 53, pts: 10, refund: 1 },
+    bonsai: { name: 'Blossom Bonsai',   size: 125, body: 'circle', r: 58, pts: 100, refund: 3, rare: true },
   });
   ORDER.push('snake', 'cactus', 'orchid', 'fern', 'aloe', 'pearls', 'bonsai');
 })();

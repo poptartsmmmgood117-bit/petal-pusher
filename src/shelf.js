@@ -10,21 +10,22 @@ Object.assign(Play.prototype, {
 
   buildShelf() {
     const L = LAYOUT;
-    for (const s of Object.values(this.slots || {})) [s.img, s.badge, s.q, s.hit].forEach(o => o.destroy());
+    for (const s of Object.values(this.slots || {})) [s.img, s.pill, s.badge, s.q, s.hit].forEach(o => o.destroy());
     this.slots = {};
     const mk = (id, x, plankY, h) => {
       const d = ART.ITEMS[id], s = (h / d.size) * d.texScale, y = plankY - h / 2 + 6;
       const img = this.add.image(x, y, 'item_' + id).setScale(s).setDepth(6);
       img.baseSX = img.baseSY = s;
-      const badge = txt(this, x + h * 0.36, plankY + 4, '', 24, '#fff', { stroke: '#3a1f4f', strokeThickness: 6 }).setOrigin(0.5).setDepth(7);
-      const q = txt(this, x, y, '?', 46, '#e9dcff', { stroke: '#2a1640', strokeThickness: 8 }).setOrigin(0.5).setDepth(7);
+      const pill = this.add.graphics().setDepth(7).setPosition(x + h * 0.36, plankY + 2); // dark pill behind ×N
+      const badge = txt(this, x + h * 0.36, plankY + 2, '', 30, '#ffffff').setOrigin(0.5).setDepth(7);
+      const q = txt(this, x, y, '?', 56, '#ffffff', { stroke: '#2a1640', strokeThickness: 10 }).setOrigin(0.5).setDepth(7);
       const hit = this.add.zone(x, y, h + 24, h + 24).setInteractive();
       hit.on('pointerdown', () => this.showHint(id, x, plankY - h - 24));
-      this.slots[id] = { img, badge, q, hit, s };
+      this.slots[id] = { img, pill, badge, q, hit, s };
     };
     const set = LV.set();
-    set.slice(0, 5).forEach((id, i) => mk(id, 120 + i * 120, L.plank1, 82));
-    set.slice(5).forEach((id, i) => mk(id, 135 + i * 150, L.plank2, i >= 2 ? 100 : 86));
+    set.slice(0, 5).forEach((id, i) => mk(id, 120 + i * 120, L.plank1, 88));
+    set.slice(5).forEach((id, i) => mk(id, 135 + i * 150, L.plank2, i >= 2 ? 104 : 92));
     this.floorTint.setFillStyle(LV.gold() ? 0xffd35a : LV.def().floor, LV.index() ? 0.2 : 0);
   },
 
@@ -34,9 +35,13 @@ Object.assign(Play.prototype, {
     for (const id of LV.set()) {
       const s = this.slots[id], c = found[id] || 0;
       if (c) { n++; s.img.setTint(gold ? 0xfff0b8 : 0xffffff).setAlpha(1); s.badge.setText('×' + c); s.q.setVisible(false); }
-      else { s.img.setTint(0x6b4f96).setAlpha(0.55); s.badge.setText(''); s.q.setVisible(true); }
+      else { s.img.setTint(0x8f7ab8).setAlpha(0.9); s.badge.setText(''); s.q.setVisible(true); } // locked: muted but solid, big white ?
+      const w = s.badge.width + 18;
+      s.pill.clear();
+      if (c) s.pill.fillStyle(0x3a1f4f, 1).fillRoundedRect(-w / 2, -20, w, 40, 20).lineStyle(3, 0xffffff, 1).strokeRoundedRect(-w / 2, -20, w, 40, 20);
     }
     this.shelfTitle.setText(`Lv ${LV.index() + 1} · ${LV.title()}   ${n}/9`);
+    this.fitText(this.shelfTitle, 600);
   },
 
   flyToShelf(id, x) {

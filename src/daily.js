@@ -43,15 +43,16 @@ Object.assign(Play.prototype, {
   },
 
   giftTick() {
-    if (this.giftShown || !this.giftReady()) return;
+    const today = DAILY.dayNum(Date.now());
+    if (this.giftDay === today || !this.giftReady()) return;
     if (DAILY.sanitize(Save.data)) Save.write();
     const st = DAILY.status(Save.data);
-    if (st) this.showGift(st); else this.giftShown = true; // nothing today: stop checking this session
+    if (st) this.showGift(st); else this.giftDay = today; // nothing today: check again tomorrow
   },
 
   showGift(st) {
     const L = LAYOUT, o = this.add.container(0, 0).setDepth(58);
-    this.giftShown = true;
+    this.giftDay = st.today;
     const dim = this.add.rectangle(L.W / 2, L.H / 2, L.W, L.H, 0x1c0d30, 0.78).setInteractive();
     const card = this.add.container(L.W / 2, 700).setScale(0.3).setAlpha(0);
     const bg = this.add.graphics().fillStyle(0xffffff, 0.97).fillRoundedRect(-300, -330, 600, 660, 48)
@@ -59,7 +60,7 @@ Object.assign(Play.prototype, {
     const t1 = txt(this, 0, -262, 'A little gift for you!', 44, '#5b2f9e').setOrigin(0.5);
     const shown = Math.min(st.streak, 7);
     const t2 = txt(this, 0, -202, st.streak > 7 ? `${st.streak} days in a row! 🔥` : `Day ${shown} of 7`, 34, '#ff4fa3').setOrigin(0.5);
-    const d = ART.ITEMS.surprise, box = this.add.image(0, -20, 'item_surprise').setScale(d.texScale * 2);
+    const d = ART.ITEMS.surprise, box = this.add.image(0, -20, 'item_surprise').setScale((224 / d.size) * d.texScale);
     const dots = Array.from({ length: 7 }, (_, i) => {
       const lit = i < shown;
       return this.add.circle(-150 + i * 50, 170, 15, lit ? 0xffd35a : 0xe9dcff).setStrokeStyle(4, lit ? 0xe8a92a : 0xc9a8f5);
@@ -71,7 +72,7 @@ Object.assign(Play.prototype, {
     const wiggle = this.tweens.add({ targets: box, angle: { from: -6, to: 6 }, duration: 260, yoyo: true, repeat: -1, repeatDelay: 700, ease: 'Sine.easeInOut' });
     SFX.special(); haptic();
     let stage = 0;
-    const kill = () => { o.destroy(true); if (stage === 0) this.giftShown = false; }; // unopened: offer it again later
+    const kill = () => { o.destroy(true); if (stage === 0) this.giftDay = null; }; // unopened: offer it again later
     const tap = () => {
       if (stage === 0) {
         stage = 1; wiggle.remove(); box.angle = 0;

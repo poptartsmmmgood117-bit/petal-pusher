@@ -14,6 +14,9 @@ const Save = {
   write() { try { localStorage.setItem(this.key, JSON.stringify(this.data)); } catch (e) { /* private mode */ } },
 };
 Save.load();
+// iOS can kill a backgrounded app without warning: keep play time and the Princess pity counter.
+document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'hidden') Save.write(); });
+addEventListener('pagehide', () => Save.write());
 SFX.setMuted(!!Save.data.muted);
 
 // iPhone has no navigator.vibrate; iOS 18+ Safari gives a light tick when a switch toggles.

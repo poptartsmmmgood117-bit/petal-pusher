@@ -1,8 +1,8 @@
 // Petal Pusher core loop: planter pusher, drops, top-down Matter physics, fall-offs.
 const CFG = {
-  startHearts: 25, cost: 1, bigCost: 3, cooldown: 220, bigCooldown: 700, megaAfterSecs: 180, longPress: 480, maxOnShelf: 50,
+  startHearts: 25, cost: 1, bigCost: 3, cooldown: 220, bigCooldown: 700, megaAfterSecs: 180, longPress: 480, maxOnShelf: 30,
   cycle: 5.6, bonusEvery: 250, bonusHearts: 3, dipperChance: 0.015, megaChance: 0.08, megaPity: 8, megaChanceAfter: 0.01, levelUpHearts: 15,
-  refillIdle: 6000, refillHearts: 5, prePile: 16, fa: 0.1, faBig: 0.14,
+  refillIdle: 6000, refillHearts: 5, prePile: 10, fa: 0.1, faBig: 0.14,
 };
 const rnd = (a, b) => a + Math.random() * (b - a);
 const pick = a => a[(Math.random() * a.length) | 0];
@@ -79,7 +79,7 @@ class Play extends Phaser.Scene {
       }
     };
     place('surprise', 640, 720);
-    for (let i = 0; i < CFG.prePile; i++) place(pick(LV.normals()), L.pusherMax + 70, L.edgeY - 30);
+    for (let i = 0; i < CFG.prePile; i++) place(pick(LV.normals()), L.pusherMax + 30, L.edgeY - 25);
   }
 
   findFreeY(x, r, y0) {
@@ -155,6 +155,11 @@ class Play extends Phaser.Scene {
     const now = this.time.now;
     if (!this.started || now - this.lastDrop < CFG.cooldown || (big && now - (this.lastBig || -1e9) < CFG.bigCooldown)) return false;
     const cost = big ? CFG.bigCost : CFG.cost;
+    if (big && this.bigMode && this.hearts < cost && this.hearts >= CFG.cost) {
+      this.bigMode = false; this.drawBig(); this.updateDropper(); SFX.denied();
+      this.toast('Not enough ♥ for BIG. Tap to drop a plant', '#ffb3d9');
+      return false;
+    }
     if (this.hearts < cost) {
       SFX.denied(); this.nudge(this.heartsText);
       this.toast(big && this.hearts > 0 ? 'A BIG drop needs 3 ♥' : 'Out of hearts… win a prize!', '#ffb3d9');
@@ -172,11 +177,13 @@ class Play extends Phaser.Scene {
     return true;
   }
 
-  dropAnim(id, x) {
-    const d = ART.ITEMS[id], r = radiusOf(d), dur = 260;
+  dropX(x, r) { return Phaser.Math.Clamp(x, LAYOUT.shelfL + r + 2, LAYOUT.shelfR - r - 2); } // big stickers never land inside a wall
+
+  dropAnim(id, x0) {
+    const d = ART.ITEMS[id], r = radiusOf(d), dur = 260, x = this.dropX(x0, r);
     const y = this.findFreeY(x, r, this.pusherBottom(this.simT + dur / 1000) + r + 8);
     this.falling++;
-    const spr = this.add.image(x, LAYOUT.shelfTop + 30, 'item_' + id).setScale(d.texScale * 1.45).setDepth(9);
+    const spr = this.add.image(x, LAYOUT.shelfTop + 30, 'item_' + id).setScale(d.texScale * 1.2).setDepth(9);
     const sh = this.add.image(x + 5, y + 9, 'shadow').setDisplaySize(d.size * 0.5, d.size * 0.45).setDepth(1).setAlpha(0.3);
     this.tweens.add({ targets: sh, displayWidth: d.size * 1.25, displayHeight: d.size * 1.1, alpha: 1, duration: dur });
     this.tweens.add({

@@ -1,6 +1,6 @@
 // Petal Pusher art, shelf 3 "Secret Garden": original hand-authored SVG stickers (see CREDITS.md).
 (() => {
-  const { C, S, ITEMS, ORDER, svg, ring, star4, face, potF, at } = ART;
+  const { C, S, ITEMS, ORDER, svg, ring, star4, face, eye, potF, at } = ART;
 
   const pp = 'M50 92C20 70 6 44 16 26C24 12 42 12 50 24C58 12 76 12 84 26C94 44 80 70 50 92Z';
   S.pinkphilo = svg(`<path d="M50 24C50 14 56 6 63 3" stroke="#5a2f4f" stroke-width="3.2" fill="none" stroke-linecap="round"/>
@@ -17,9 +17,8 @@
      <path d="M18 33C18 6 82 6 82 33Z" fill="#7fd07a"/>
      ${Array.from({ length: 9 }, (_, i) => { const x = 23 + i * 6.6; return `<path d="M${x} 33L${x + 2.6} 39L${x + 5.2} 33Z" fill="#f2ffe6"/>`; }).join('')}
      ${Array.from({ length: 7 }, (_, i) => { const x = 26 + i * 7.3, y = toothY(x + 2.6).toFixed(1); return `<path d="M${x} ${y}L${x + 2.6} ${y - 5}L${x + 5.2} ${y}Z" fill="#f2ffe6"/>`; }).join('')}
-     <circle cx="38" cy="20" r="3.4" fill="${C.ink}"/><circle cx="62" cy="20" r="3.4" fill="${C.ink}"/>
-     <circle cx="39.2" cy="18.8" r="1.2" fill="#fff"/><circle cx="63.2" cy="18.8" r="1.2" fill="#fff"/>
-     <ellipse cx="30" cy="26" rx="4" ry="2.3" fill="${C.blush}" opacity=".9"/><ellipse cx="70" cy="26" rx="4" ry="2.3" fill="${C.blush}" opacity=".9"/>`);
+     <ellipse cx="27" cy="27" rx="4.6" ry="2.6" fill="${C.blush}" opacity=".9"/><ellipse cx="73" cy="27" rx="4.6" ry="2.6" fill="${C.blush}" opacity=".9"/>
+     ${eye(39, 20, 5.8)}${eye(61, 20, 5.8)}`);
 
   S.paradise = svg(`<ellipse cx="24" cy="60" rx="14" ry="32" fill="${C.leaf}" transform="rotate(-18 24 60)"/>
     <path d="M28 90L20 32" stroke="${C.leafD}" stroke-width="2.4" stroke-linecap="round"/>
@@ -66,13 +65,13 @@
     star4(12, 14, 6, '#fff3c4') + star4(88, 12, 5, '#fff3c4') + star4(90, 70, 4, '#fff'));
 
   Object.assign(ITEMS, {
-    pinkphilo:   { name: 'Pink Princess Leaf', size: 80, body: 'circle', r: 38, pts: 10, refund: 1 },
-    flytrap:     { name: 'Venus Flytrap',      size: 80, body: 'circle', r: 38, pts: 10, refund: 1 },
-    paradise:    { name: 'Bird of Paradise',   size: 82, body: 'circle', r: 39, pts: 10, refund: 1 },
-    lavender:    { name: 'Lavender Bunch',     size: 80, body: 'circle', r: 36, pts: 10, refund: 1 },
-    calathea:    { name: 'Rose Calathea',      size: 80, body: 'circle', r: 38, pts: 10, refund: 1 },
-    toadstool:   { name: 'Happy Toadstool',    size: 78, body: 'circle', r: 37, pts: 10, refund: 1 },
-    rainbowrose: { name: 'Rainbow Rose',       size: 88, body: 'circle', r: 41, pts: 100, refund: 3, rare: true },
+    pinkphilo:   { name: 'Pink Princess Leaf', size: 114, body: 'circle', r: 54, pts: 10, refund: 1 },
+    flytrap:     { name: 'Venus Flytrap',      size: 114, body: 'circle', r: 54, pts: 10, refund: 1 },
+    paradise:    { name: 'Bird of Paradise',   size: 116, body: 'circle', r: 55, pts: 10, refund: 1 },
+    lavender:    { name: 'Lavender Bunch',     size: 114, body: 'circle', r: 51, pts: 10, refund: 1 },
+    calathea:    { name: 'Rose Calathea',      size: 114, body: 'circle', r: 54, pts: 10, refund: 1 },
+    toadstool:   { name: 'Happy Toadstool',    size: 111, body: 'circle', r: 53, pts: 10, refund: 1 },
+    rainbowrose: { name: 'Rainbow Rose',       size: 125, body: 'circle', r: 58, pts: 100, refund: 3, rare: true },
   });
   ORDER.push('pinkphilo', 'flytrap', 'paradise', 'lavender', 'calathea', 'toadstool', 'rainbowrose');
 })();

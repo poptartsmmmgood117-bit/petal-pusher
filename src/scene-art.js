@@ -1,7 +1,7 @@
 // Cabinet background + planter-box pusher (world units; rasterized by ART.build).
 const LAYOUT = {
   W: 720, H: 1560,
-  shelfL: 60, shelfR: 660, shelfTop: 160, edgeY: 900, gutter: 130,
+  shelfL: 60, shelfR: 660, shelfTop: 160, edgeY: 900, gutter: 155,
   pusherH: 170, pusherMin: 330, pusherMax: 600, // pusher bottom edge travel (tuned by sim: ~0.97 wins/drop)
   dispTop: 1036, plank1: 1172, plank2: 1312, panelTop: 1360,
 };

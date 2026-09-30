@@ -45,7 +45,11 @@ const COZY = { perPage: 4, sticker: 56 };
     },
 
     onEvent(ev, info) {
-      if (ev === 'start') this.startedAt = this.time.now;
+      if (ev === 'start') {
+        this.startedAt = this.time.now;
+        // The app closed (or a code was copied) in the gap before a finished shelf levelled up: level up now.
+        if (!this.levelingUp && LV.set().every(k => Save.data.found[k])) { this.levelingUp = true; this.time.delayedCall(900, () => this.levelUp()); }
+      }
       return base.onEvent.call(this, ev, info);
     },
 

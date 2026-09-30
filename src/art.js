@@ -10,12 +10,14 @@ const ART = (() => {
   const ring = (n, fn) => Array.from({ length: n }, (_, i) => fn(i, (i * 360) / n)).join('');
   const star4 = (x, y, r, fill) =>
     `<path d="M${x} ${y - r}Q${x} ${y} ${x + r} ${y}Q${x} ${y} ${x} ${y + r}Q${x} ${y} ${x - r} ${y}Q${x} ${y} ${x} ${y - r}Z" fill="${fill}"/>`;
+  // Big shiny eyes (readable at phone size): ink ovals, a bright catchlight and a small second sparkle.
+  const eye = (x, y, r) => `<ellipse cx="${x}" cy="${y}" rx="${r}" ry="${r * 1.12}" fill="${C.ink}"/>
+    <circle cx="${x + r * 0.32}" cy="${y - r * 0.38}" r="${r * 0.42}" fill="#fff"/><circle cx="${x - r * 0.38}" cy="${y + r * 0.42}" r="${r * 0.18}" fill="#fff"/>`;
   const face = (cx, cy, s = 1) => `<g transform="translate(${cx} ${cy}) scale(${s})">
-    <circle cx="-7" cy="0" r="2.8" fill="${C.ink}"/><circle cx="7" cy="0" r="2.8" fill="${C.ink}"/>
-    <circle cx="-6.1" cy="-1" r="1" fill="#fff"/><circle cx="7.9" cy="-1" r="1" fill="#fff"/>
-    <path d="M-3 4Q0 7 3 4" stroke="${C.ink}" stroke-width="1.7" fill="none" stroke-linecap="round"/>
-    <ellipse cx="-12.5" cy="5" rx="3.4" ry="2.1" fill="${C.blush}" opacity=".85"/>
-    <ellipse cx="12.5" cy="5" rx="3.4" ry="2.1" fill="${C.blush}" opacity=".85"/></g>`;
+    <ellipse cx="-14" cy="6" rx="4.6" ry="2.8" fill="${C.blush}" opacity=".9"/>
+    <ellipse cx="14" cy="6" rx="4.6" ry="2.8" fill="${C.blush}" opacity=".9"/>
+    ${eye(-9, -1.5, 5.8)}${eye(9, -1.5, 5.8)}
+    <path d="M-3.6 4.6Q0 8.6 3.6 4.6" stroke="${C.ink}" stroke-width="2.5" fill="none" stroke-linecap="round"/></g>`;
   const heartPath = 'M0 6C-10-2-12-12-5-15C-2-16 0-14 0-11C0-14 2-16 5-15C12-12 10-2 0 6Z';
 
   const S = {};
@@ -85,15 +87,15 @@ const ART = (() => {
 
   // --- Prize catalog: id -> name, points, heart refund, body. size = on-screen px in world units.
   const ITEMS = {
-    monstera:  { name: 'Monstera Leaf',  size: 80,  body: 'circle', r: 38, pts: 10,  refund: 1 },
-    lily:      { name: 'Stargazer Lily', size: 80,  body: 'circle', r: 40, pts: 10,  refund: 1 },
-    succulent: { name: 'Sunny Succulent',size: 80,  body: 'circle', r: 37, pts: 10,  refund: 1 },
-    pothos:    { name: 'Golden Pothos',  size: 80,  body: 'circle', r: 38, pts: 10,  refund: 1 },
-    candy:     { name: 'Grape Candy',    size: 74,  body: 'circle', r: 34, pts: 10,  refund: 1 },
-    giftmini:  { name: 'Mini Gift',      size: 74,  body: 'rect',   w: 68, h: 62, pts: 10, refund: 1 },
-    dipper:    { name: 'Little Dipper',  size: 88,  body: 'circle', r: 41, pts: 100, refund: 3, rare: true },
-    surprise:  { name: 'Surprise Box',   size: 112, body: 'rect',   w: 96, h: 86, pts: 50, refund: 2, big: true, density: 0.0026 },
-    princess:  { name: 'Princess Angel Baby Subscriber Gift Box', size: 124, body: 'rect', w: 98, h: 92, pts: 250, refund: 15, big: true, mega: true, density: 0.0026 },
+    monstera:  { name: 'Monstera Leaf',  size: 114,  body: 'circle', r: 54, pts: 10,  refund: 1 },
+    lily:      { name: 'Stargazer Lily', size: 114,  body: 'circle', r: 57, pts: 10,  refund: 1 },
+    succulent: { name: 'Sunny Succulent',size: 114,  body: 'circle', r: 53, pts: 10,  refund: 1 },
+    pothos:    { name: 'Golden Pothos',  size: 114,  body: 'circle', r: 54, pts: 10,  refund: 1 },
+    candy:     { name: 'Grape Candy',    size: 105,  body: 'circle', r: 48, pts: 10,  refund: 1 },
+    giftmini:  { name: 'Mini Gift',      size: 105,  body: 'rect',   w: 97, h: 88, pts: 10, refund: 1 },
+    dipper:    { name: 'Little Dipper',  size: 125,  body: 'circle', r: 58, pts: 100, refund: 3, rare: true },
+    surprise:  { name: 'Surprise Box',   size: 146, body: 'rect',   w: 125, h: 112, pts: 50, refund: 2, big: true, density: 0.0026 },
+    princess:  { name: 'Princess Angel Baby Subscriber Gift Box', size: 161, body: 'rect', w: 127, h: 120, pts: 250, refund: 15, big: true, mega: true, density: 0.0026 },
   };
   const ORDER = ['monstera', 'lily', 'succulent', 'pothos', 'candy', 'giftmini', 'dipper', 'surprise', 'princess'];
 
@@ -104,16 +106,20 @@ const ART = (() => {
     img.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svgStr.replace('<svg ', `<svg width="${w}" height="${h}" `));
   });
 
-  // White sticker border: stamp a white silhouette around the art, then the art on top.
-  function sticker(img, px, border) {
-    const pad = Math.ceil(border) + 2, W = px + pad * 2;
-    const sil = document.createElement('canvas'); sil.width = sil.height = W;
-    const sg = sil.getContext('2d');
-    sg.drawImage(img, pad, pad, px, px);
-    sg.globalCompositeOperation = 'source-in'; sg.fillStyle = '#fff'; sg.fillRect(0, 0, W, W);
+  // White sticker border with a thin purple rim outside it (keeps stickers apart in a pile), then the art on top.
+  function sticker(img, px, border, rim) {
+    const pad = Math.ceil(border + rim) + 2, W = px + pad * 2;
+    const silOf = color => {
+      const sil = document.createElement('canvas'); sil.width = sil.height = W;
+      const sg = sil.getContext('2d');
+      sg.drawImage(img, pad, pad, px, px);
+      sg.globalCompositeOperation = 'source-in'; sg.fillStyle = color; sg.fillRect(0, 0, W, W);
+      return sil;
+    };
     const c = document.createElement('canvas'); c.width = c.height = W;
     const g = c.getContext('2d');
-    for (let i = 0; i < 20; i++) { const a = (i / 20) * Math.PI * 2; g.drawImage(sil, Math.cos(a) * border, Math.sin(a) * border); }
+    const stamp = (sil, r) => { for (let i = 0; i < 24; i++) { const a = (i / 24) * Math.PI * 2; g.drawImage(sil, Math.cos(a) * r, Math.sin(a) * r); } };
+    stamp(silOf('rgba(91,47,158,0.55)'), border + rim); stamp(silOf('#fff'), border);
     g.drawImage(img, pad, pad, px, px);
     return { canvas: c, pad };
   }
@@ -139,7 +145,7 @@ const ART = (() => {
     const jobs = ORDER.map(async id => {
       const it = ITEMS[id], px = Math.round(it.size * RES);
       const img = await loadImg(S[id], px, px);
-      const st = sticker(img, px, 5 * RES);
+      const st = sticker(img, px, 5 * RES, 1.6 * RES);
       scene.textures.addCanvas('item_' + id, st.canvas);
       it.texScale = 1 / RES; // sprite scale to show `size` world units (+ border)
     });
@@ -160,6 +166,6 @@ const ART = (() => {
     await Promise.all(jobs);
   }
 
-  const api = { C, S, ITEMS, ORDER, build, heartPath, svg, star4, ring, face, RES: 1 };
+  const api = { C, S, ITEMS, ORDER, build, heartPath, svg, star4, ring, face, eye, RES: 1 };
   return api;
 })();

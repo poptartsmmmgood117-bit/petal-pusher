@@ -8,7 +8,7 @@ Object.assign(Play.prototype, {
     const L = LAYOUT;
     this.titleText = txt(this, L.W / 2, 60, TITLE, 56, '#ffffff', { stroke: '#5b2f9e', strokeThickness: 10 }).setOrigin(0.5).setDepth(20);
     this.titleText.setShadow(0, 5, '#2a1640', 0, true, true);
-    this.scoreText = txt(this, L.W / 2, 110, '', 28, '#f3e8ff').setOrigin(0.5).setDepth(20);
+    this.scoreText = txt(this, L.W / 2, 110, '', 34, '#ffffff', { stroke: '#3a1f4f', strokeThickness: 5 }).setOrigin(0.5).setDepth(20);
     this.muteBtn = txt(this, 648, 76, SFX.muted ? '🔇' : '🔊', 38).setOrigin(0.5).setDepth(21).setInteractive({ useHandCursor: true });
     this.muteBtn.on('pointerdown', () => {
       const m = !SFX.muted; SFX.setMuted(m); Save.data.muted = m; Save.write(); this.muteBtn.setText(m ? '🔇' : '🔊');
@@ -19,15 +19,15 @@ Object.assign(Play.prototype, {
     this.chuteLabel = txt(this, L.W / 2, L.edgeY + 62, '♥   PRIZE CHUTE   ♥', 30, '#f1e6ff', { stroke: '#12071f', strokeThickness: 5 }).setOrigin(0.5).setAlpha(0.7).setDepth(1);
 
     // dropper: ring + next-prize preview riding the aim X
-    this.aimLine = this.add.rectangle(L.W / 2, (262 + L.pusherMax + 40) / 2, 6, L.pusherMax + 40 - 262, 0xffffff, 0.16).setDepth(8);
+    this.aimLine = this.add.rectangle(L.W / 2, (272 + L.pusherMax + 40) / 2, 6, L.pusherMax + 40 - 272, 0xffffff, 0.16).setDepth(8);
     this.dropper = this.add.container(L.W / 2, 208).setDepth(10);
-    const ring = this.add.circle(0, 0, 50, 0xffffff, 0.22).setStrokeStyle(5, 0xffffff, 0.9);
+    const ring = this.add.circle(0, 0, 60, 0xffffff, 0.22).setStrokeStyle(5, 0xffffff, 0.9);
     this.dropImg = this.add.image(0, 0, 'item_monstera');
     this.chargeG = this.add.graphics();
     this.dropper.add([ring, this.dropImg, this.chargeG]);
 
     // collection shelf (rebuilt on level up, see shelf.js)
-    this.shelfTitle = txt(this, 60, L.dispTop + 18, '', 32, '#ffffff', { align: 'left', stroke: '#2a1640', strokeThickness: 6 }).setDepth(6);
+    this.shelfTitle = txt(this, 60, L.dispTop + 12, '', 38, '#ffffff', { align: 'left', stroke: '#2a1640', strokeThickness: 7 }).setDepth(6);
     this.floorTint = this.add.rectangle(L.W / 2, (L.shelfTop + L.edgeY) / 2, L.shelfR - L.shelfL, L.edgeY - L.shelfTop, 0xffffff, 0).setDepth(0.5);
     this.buildShelf();
 
@@ -35,10 +35,10 @@ Object.assign(Play.prototype, {
     const py = L.panelTop + 92;
     this.heartIcon = this.add.image(104, py, 'heart').setDisplaySize(92, 92).setTint(0xff6fb3).setDepth(20);
     this.heartsText = txt(this, 164, py, '', 72, '#ffffff', { stroke: '#3a1f4f', strokeThickness: 8 }).setOrigin(0, 0.5).setDepth(20);
-    txt(this, 104, py + 66, 'hearts', 22, '#c9a8f5').setOrigin(0.5).setDepth(20);
+    txt(this, 104, py + 66, 'hearts', 26, '#e0ccff').setOrigin(0.5).setDepth(20);
     this.bigG = this.add.graphics().setDepth(20);
     this.bigText = txt(this, 520, py - 14, 'BIG DROP', 40, '#ffffff').setOrigin(0.5).setDepth(21);
-    this.bigSub = txt(this, 520, py + 28, 'costs 3 ♥ · or hold', 22, '#e9dcff').setOrigin(0.5).setDepth(21);
+    this.bigSub = txt(this, 520, py + 28, 'costs 3 ♥ · or hold', 25, '#f3ecff').setOrigin(0.5).setDepth(21);
     this.add.zone(520, py, 290, 124).setInteractive({ useHandCursor: true }).on('pointerdown', () => {
       this.bigMode = !this.bigMode; haptic(); SFX.drop(this.bigMode); this.drawBig(); this.updateDropper();
     });
@@ -57,16 +57,19 @@ Object.assign(Play.prototype, {
   },
 
   refreshHud(punch) {
-    this.scoreText.setText(`Score ${this.score}    ·    Best ${Math.max(Save.data.best, this.score)}`);
+    this.scoreText.setText(`Score ${this.score}  ·  Best ${Math.max(Save.data.best, this.score)}`);
+    this.fitText(this.scoreText, 360); // stay between the album and music buttons
     this.heartsText.setText(String(this.hearts));
     if (punch) { this.pop(this.heartsText); this.pop(this.heartIcon); } // absolute pops: no size ratchet
     if (this.started && this.hearts < CFG.bigCost) this.onEvent('lowHearts');
   },
 
+  fitText(t, maxW) { t.setScale(Math.min(1, maxW / t.width)); },
+
   updateDropper() {
     if (!this.dropImg) return;
     const id = this.bigMode ? 'surprise' : this.nextId, d = ART.ITEMS[id];
-    this.dropImg.setTexture('item_' + id).setScale((74 / d.size) * d.texScale);
+    this.dropImg.setTexture('item_' + id).setScale((92 / d.size) * d.texScale);
   },
 
   animateHud(time) {
@@ -78,7 +81,7 @@ Object.assign(Play.prototype, {
     const g = this.chargeG;
     this.chargeTween = this.tweens.addCounter({
       from: 0, to: 1, duration: CFG.longPress, delay: 120,
-      onUpdate: tw => { const v = tw.getValue(); g.clear().lineStyle(8, 0xffd35a, 1).beginPath().arc(0, 0, 58, -Math.PI / 2, -Math.PI / 2 + v * Math.PI * 2).strokePath(); },
+      onUpdate: tw => { const v = tw.getValue(); g.clear().lineStyle(8, 0xffd35a, 1).beginPath().arc(0, 0, 68, -Math.PI / 2, -Math.PI / 2 + v * Math.PI * 2).strokePath(); },
     });
   },
   stopCharge(fired) {
@@ -129,7 +132,7 @@ Object.assign(Play.prototype, {
   bigWin(x) {
     SFX.bigWin(); this.burst(x, 'spark', 22, [0xffd35a, 0xffffff, 0xc9a8f5]);
     this.cameras.main.shake(160, 0.004);
-    this.toast('Surprise! +50  ♥+5', '#ffd35a');
+    this.toast(`Surprise! +50  ♥+${ART.ITEMS.surprise.refund}`, '#ffd35a');
   },
 
   megaWin() {
@@ -139,7 +142,7 @@ Object.assign(Play.prototype, {
     const box = this.add.container(L.W / 2, 600).setDepth(46).setScale(0.3).setAlpha(0);
     const bg = this.add.graphics().fillStyle(0xffffff, 0.96).fillRoundedRect(-300, -210, 600, 420, 44)
       .lineStyle(8, 0xff8fc8, 1).strokeRoundedRect(-300, -210, 600, 420, 44);
-    const pd = ART.ITEMS.princess, pic = this.add.image(0, -100, 'item_princess').setScale(pd.texScale * 1.3);
+    const pd = ART.ITEMS.princess, pic = this.add.image(0, -100, 'item_princess').setScale((160 / pd.size) * pd.texScale);
     const t1 = txt(this, 0, 30, 'JACKPOT!', 44, '#ff4fa3').setOrigin(0.5);
     const t2 = txt(this, 0, 100, 'Princess Angel Baby\nSubscriber Gift Box', 36, '#5b2f9e', { lineSpacing: 4 }).setOrigin(0.5);
     const t3 = txt(this, 0, 176, '+250   ♥+15', 40, '#e8a92a', { stroke: '#ffffff', strokeThickness: 4 }).setOrigin(0.5);
