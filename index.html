@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Petal Pusher">
+<meta name="theme-color" content="#2a1640">
+<link rel="icon" href="icon-192.png">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="stylesheet" href="src/home.css?v=1">
+<title>Petal Pusher</title>
+<style>
+  html, body {
+    margin: 0; padding: 0; height: 100%; background: #2a1640;
+    overflow: hidden; overscroll-behavior: none; position: fixed; inset: 0;
+    -webkit-touch-callout: none; -webkit-user-select: none; user-select: none;
+    -webkit-tap-highlight-color: transparent; touch-action: pan-x pan-y;
+  }
+  #game {
+    position: fixed;
+    top: env(safe-area-inset-top, 0px); bottom: env(safe-area-inset-bottom, 0px);
+    left: env(safe-area-inset-left, 0px); right: env(safe-area-inset-right, 0px);
+  }
+  canvas { display: block; touch-action: none; }
+  #haptic { position: absolute; opacity: 0; pointer-events: none; width: 1px; height: 1px; overflow: hidden; }
+</style>
+</head>
+<body>
+<div id="game"></div>
+<label id="haptic" aria-hidden="true"><input type="checkbox" switch></label>
+<script src="lib/phaser.min.js"></script>
+<script src="src/art.js?v=2"></script>
+<script src="src/art2.js?v=2"></script>
+<script src="src/art3.js?v=2"></script>
+<script src="src/scene-art.js?v=2"></script>
+<script src="src/sfx.js?v=3"></script>
+<script src="src/music.js?v=2"></script>
+<script src="src/levels.js?v=2"></script>
+<script src="src/play.js?v=2"></script>
+<script src="src/fx.js?v=2"></script>
+<script src="src/shelf.js?v=3"></script>
+<script src="src/coach.js?v=2"></script>
+<script src="src/daily.js?v=1"></script>
+<script src="src/cozy.js?v=1"></script>
+<script src="src/transfer.js?v=2"></script>
+<script src="src/home-ui.js?v=2"></script>
+<script src="src/game.js?v=2"></script>
+<script src="src/offline.js?v=1"></script>
+</body>
+</html>
