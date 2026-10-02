@@ -14,6 +14,7 @@ const Save = {
   write() { try { localStorage.setItem(this.key, JSON.stringify(this.data)); } catch (e) { /* private mode */ } },
 };
 Save.load();
+if (LV.migrate()) Save.write(); // older saves get a shelf key; a not-yet-started Golden shelf becomes a brand-new shelf
 // iOS can kill a backgrounded app without warning: keep play time and the Princess pity counter.
 document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'hidden') Save.write(); });
 addEventListener('pagehide', () => Save.write());
@@ -49,4 +50,20 @@ window.GAME = new Phaser.Game({
   physics: { default: 'matter', matter: { gravity: { x: 0, y: 0 }, autoUpdate: false, positionIterations: 8, velocityIterations: 6 } },
   input: { activePointers: 2 },
   scene: [Boot, Play],
+  // Phaser stops its frame loop for good on any uncaught error (the whole game freezes).
+  // Keep running instead, and keep the last error for the next bug report.
+  callbacks: {
+    postBoot: game => {
+      const step = game.step;
+      let logged = 0;
+      game.step = function (time, delta) {
+        try { step.call(this, time, delta); } catch (e) {
+          if (logged++ < 5) {
+            console.error(e);
+            try { localStorage.setItem('petalpusher.lastError', new Date().toISOString() + ' ' + String((e && e.stack) || e).slice(0, 1500)); } catch (e2) { /* full */ }
+          }
+        }
+      };
+    },
+  },
 });

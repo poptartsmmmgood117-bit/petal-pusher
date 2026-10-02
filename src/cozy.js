@@ -106,12 +106,12 @@ const COZY = { perPage: 4, sticker: 56 };
         o.add(txt(this, L.W / 2, 700, '🌱\nNothing here yet!\nFill all 9 spots on your shelf\nand it gets saved in this album 💜', 32, '#3a1f4f', { lineSpacing: 12 }).setOrigin(0.5));
       }
       albums.map((a, i) => ({ a, i })).reverse().slice(pg * COZY.perPage, (pg + 1) * COZY.perPage).forEach(({ a, i }, k) => {
-        const y = 540 + k * 168, gold = /^Golden /.test(a.name || ''), lv = LEVELS.findIndex(l => l.name === String(a.name || '').replace(/^Golden /, ''));
+        const y = 540 + k * 168, gold = /^Golden /.test(a.name || ''), def = LV.byKey(a.key) || LV.byName(a.name);
         const card = this.add.graphics().fillStyle(gold ? 0xfff6d6 : 0xf6f0ff, 1).fillRoundedRect(60, y, 600, 152, 26)
           .lineStyle(gold ? 5 : 3, gold ? 0xffd35a : 0xe0d0fa, 1).strokeRoundedRect(60, y, 600, 152, 26);
         o.add(card);
         o.add(txt(this, 84, y + 30, `${gold ? '⭐ ' : ''}Lv ${i + 1} · ${a.name || 'Shelf'}`, 28, gold ? '#b07a00' : '#3a1f4f', { align: 'left' }).setOrigin(0, 0.5));
-        const f = a.found || {}, ids = lv >= 0 ? LV.set(lv) : Object.keys(f).slice(0, 9);
+        const f = a.found || {}, ids = def ? LV.setOf(def) : Object.keys(f).slice(0, 9);
         o.add(txt(this, 636, y + 30, `${ids.filter(id => f[id]).length}/9`, 26, gold ? '#b07a00' : '#8e5cd6').setOrigin(1, 0.5));
         row(ids, f, y + 94, gold);
       });

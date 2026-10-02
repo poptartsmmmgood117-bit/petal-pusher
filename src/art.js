@@ -166,6 +166,26 @@ const ART = (() => {
     await Promise.all(jobs);
   }
 
-  const api = { C, S, ITEMS, ORDER, build, heartPath, svg, star4, ring, face, eye, RES: 1 };
+  // Shelf pipeline for shelf 4 and up (art4.js, art5.js, ...): one call adds 7 stickers and the level.
+  //   ART.addShelf({ key, name, floor, plants: { id: { name, svg }, ...6 }, rare: { id: { name, svg } } })
+  // Optional per item: size, r (circle body) or body: 'rect' + w, h. levels.js picks the shelves up in load order.
+  const SHELVES = [];
+  function addShelf({ key, name, floor = 0xffffff, plants = {}, rare = {} }) {
+    const pIds = Object.keys(plants), rIds = Object.keys(rare), ids = [...pIds, ...rIds];
+    const clash = ids.find(id => ITEMS[id] || !(plants[id] || rare[id]).svg);
+    const bad = pIds.length !== 6 ? 'needs exactly 6 plants' : rIds.length !== 1 ? 'needs exactly 1 rare'
+      : SHELVES.some(s => s.key === key) ? 'duplicate key' : clash ? `"${clash}" is taken or has no svg` : '';
+    if (bad) { console.error(`addShelf ${key}: ${bad} (shelf skipped)`); return; }
+    for (const id of ids) {
+      const { svg: art, ...d } = plants[id] || rare[id];
+      S[id] = art;
+      ITEMS[id] = rare[id] ? { size: 125, body: 'circle', r: 58, pts: 100, refund: 3, ...d, rare: true }
+        : { size: 114, body: 'circle', r: 54, pts: 10, refund: 1, ...d };
+      ORDER.push(id);
+    }
+    SHELVES.push({ key, name, floor, normals: pIds, rare: rIds[0] });
+  }
+
+  const api = { C, S, ITEMS, ORDER, SHELVES, addShelf, build, heartPath, svg, star4, ring, face, eye, RES: 1 };
   return api;
 })();

@@ -50,12 +50,15 @@ const Transfer = {
     if ('playSecs' in data && !(Number.isFinite(data.playSecs) && data.playSecs >= 0)) fail();
     for (const key of ['muted', 'musicMuted']) if (key in data && typeof data[key] !== 'boolean') fail();
     if ('tips' in data && (!object(data.tips) || !Object.values(data.tips).every(v => v === 0 || v === 1 || typeof v === 'boolean'))) fail();
+    if ('shelf' in data && !(object(data.shelf) && typeof data.shelf.key === 'string')) fail();
     if ('albums' in data && (!Array.isArray(data.albums) || !data.albums.every(a =>
       object(a) && typeof a.name === 'string' && found(a.found)))) fail();
   },
   preview(data) {
-    const level = data.level || 0, n = LV.set(level).filter(id => data.found[id]).length;
-    return `Level ${level + 1} · ${LV.title(level)}\n${n}/9 prizes found · ${(data.albums || []).length} completed ${(data.albums || []).length === 1 ? 'shelf' : 'shelves'}\nBest score ${data.best}\n${CFG.startHearts} hearts in the new round`;
+    const sv = { ...data }, level = LV.index(sv);
+    LV.migrate(sv); // show the shelf she will actually land on
+    const n = LV.set(sv).filter(id => data.found[id]).length;
+    return `Level ${level + 1} · ${LV.title(sv)}\n${n}/9 prizes found · ${(data.albums || []).length} completed ${(data.albums || []).length === 1 ? 'shelf' : 'shelves'}\nBest score ${data.best}\n${CFG.startHearts} hearts in the new round`;
   },
   restore(data) {
     this.validate(data);

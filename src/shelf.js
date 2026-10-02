@@ -30,6 +30,7 @@ Object.assign(Play.prototype, {
   },
 
   refreshShelf() {
+    if (LV.set().some(id => !this.slots[id])) this.buildShelf(); // slots always match the current shelf
     const found = Save.data.found, gold = LV.gold();
     let n = 0;
     for (const id of LV.set()) {
@@ -54,7 +55,9 @@ Object.assign(Play.prototype, {
     this.tweens.add({
       targets: fly, y: slot.img.y, scale: slot.s, duration: 560, ease: 'Back.easeIn',
       onComplete: () => {
-        fly.destroy(); this.refreshShelf(); this.pop(slot.img, 1.25, 110);
+        fly.destroy(); this.refreshShelf();
+        if (this.slots[id] !== slot) return; // the shelf levelled up while it flew: that slot is gone
+        this.pop(slot.img, 1.25, 110);
         if (!first) return;
         this.sparkleAt(slot.img.x, slot.img.y, 12); this.toast(`New prize: ${d.name}!`, '#9be7b4');
         if (!this.levelingUp && LV.set().every(k => Save.data.found[k])) {
@@ -67,9 +70,12 @@ Object.assign(Play.prototype, {
 
   levelUp() {
     const L = LAYOUT;
-    Save.data.albums = [...(Save.data.albums || []), { name: LV.title(), found: Save.data.found }];
-    Save.data.level = LV.index() + 1; Save.data.found = {};
+    Save.data.albums = [...(Save.data.albums || []), { name: LV.title(), key: LV.def().key, found: Save.data.found }];
+    Save.data.shelf = LV.next(); Save.data.level = LV.index() + 1; Save.data.found = {};
     this.hearts += CFG.levelUpHearts; Save.write();
+    // Switch the shelf now, behind the card. The cabinet keeps pushing while the card is up, and a prize
+    // landing on a stale shelf used to throw and freeze the whole game (the Level 13 report).
+    this.buildShelf(); this.refreshShelf(); this.rollNext(); this.refreshHud(true);
     SFX.mega(); this.confetti(); haptic(40);
     const o = this.add.container(0, 0).setDepth(62);
     const dim = this.add.rectangle(L.W / 2, L.H / 2, L.W, L.H, 0x1c0d30, 0.6).setInteractive();
@@ -92,9 +98,8 @@ Object.assign(Play.prototype, {
     const close = () => {
       if (done) return; done = true;
       this.tweens.add({ targets: o, alpha: 0, duration: 250, onComplete: () => o.destroy(true) });
-      this.buildShelf(); this.refreshShelf(); this.rollNext(); this.refreshHud(true);
       this.levelingUp = false;
-      this.toast('New plants are dropping! 🌱', '#9be7b4');
+      this.toast(LV.gold() ? 'Golden plants are dropping! ✨' : 'New plants are dropping! 🌱', '#9be7b4');
     };
     this.time.delayedCall(700, () => dim.once('pointerup', close));
     this.time.delayedCall(8000, close);

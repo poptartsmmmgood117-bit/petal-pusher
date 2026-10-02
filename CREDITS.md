@@ -4,7 +4,7 @@ Petal Pusher (working title of the Shelf Drop prototype)
 
 ## Art
 All prize stickers, the planter pusher, the cabinet, the shelf, the icons and the UI art
-are original hand-authored SVG, written in `src/art.js` and `src/scene-art.js` for this
+are original hand-authored SVG, written in `src/art*.js` and `src/scene-art.js` for this
 game and rasterized at boot. No stock art, no AI-generated images, and no third-party
 art assets.
 
