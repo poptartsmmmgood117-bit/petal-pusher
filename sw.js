@@ -1,16 +1,16 @@
 // Keep this explicit list in sync with index.html, including exact ?v= query strings.
 // Bump VERSION whenever any cached file changes, even if its URL stays the same.
-const VERSION = 'v4';
+const VERSION = 'v5';
 const CACHE_PREFIX = 'petal-pusher:' + self.registration.scope + ':';
 const CACHE_NAME = CACHE_PREFIX + VERSION;
 const FILES = [
   './', './index.html', './manifest.webmanifest',
   './icon-180.png', './icon-192.png', './icon-512.png',
   './lib/phaser.min.js', './src/home.css?v=1',
-  './src/art.js?v=4', './src/art2.js?v=3', './src/art3.js?v=3', './src/art4.js?v=1', './src/art5.js?v=1',
-  './src/scene-art.js?v=3', './src/sfx.js?v=3', './src/music.js?v=2', './src/levels.js?v=3',
-  './src/play.js?v=3', './src/fx.js?v=3', './src/shelf.js?v=5',
-  './src/coach.js?v=2', './src/daily.js?v=2', './src/cozy.js?v=3',
+  './src/art.js?v=5', './src/art2.js?v=4', './src/art3.js?v=4', './src/art4.js?v=2', './src/art5.js?v=2',
+  './src/scene-art.js?v=3', './src/sfx.js?v=4', './src/music.js?v=2', './src/levels.js?v=4',
+  './src/play.js?v=3', './src/fx.js?v=4', './src/shelf.js?v=6',
+  './src/coach.js?v=2', './src/daily.js?v=2', './src/cozy.js?v=4',
   './src/transfer.js?v=3', './src/home-ui.js?v=2',
   './src/game.js?v=4', './src/offline.js?v=1',
 ];

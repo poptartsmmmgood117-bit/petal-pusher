@@ -110,7 +110,7 @@ const COZY = { perPage: 4, sticker: 56 };
         const card = this.add.graphics().fillStyle(gold ? 0xfff6d6 : 0xf6f0ff, 1).fillRoundedRect(60, y, 600, 152, 26)
           .lineStyle(gold ? 5 : 3, gold ? 0xffd35a : 0xe0d0fa, 1).strokeRoundedRect(60, y, 600, 152, 26);
         o.add(card);
-        o.add(txt(this, 84, y + 30, `${gold ? '⭐ ' : ''}Lv ${i + 1} · ${a.name || 'Shelf'}`, 28, gold ? '#b07a00' : '#3a1f4f', { align: 'left' }).setOrigin(0, 0.5));
+        o.add(txt(this, 84, y + 30, `${gold ? '⭐ ' : ''}Lv ${i + 1} · ${def ? (gold ? 'Golden ' : '') + def.name : a.name || 'Shelf'}`, 28, gold ? '#b07a00' : '#3a1f4f', { align: 'left' }).setOrigin(0, 0.5));
         const f = a.found || {}, ids = def ? LV.setOf(def) : Object.keys(f).slice(0, 9);
         o.add(txt(this, 636, y + 30, `${ids.filter(id => f[id]).length}/9`, 26, gold ? '#b07a00' : '#8e5cd6').setOrigin(1, 0.5));
         row(ids, f, y + 94, gold);

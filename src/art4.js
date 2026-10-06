@@ -1,5 +1,5 @@
-// Petal Pusher art, shelf 4 "Sunny Meadow": original hand-authored SVG stickers (see CREDITS.md).
-// Template for new shelves: copy this file to artN.js, change key/name/ids/art, add the script tag (index.html + sw.js).
+// Petal Pusher art, shelf 4 "Poppy Meadow": original hand-authored SVG stickers (see CREDITS.md).
+// Template for new shelves: copy this file to artN.js, change key/name/flower/ids/art (the flower species must be new), add the script tag (index.html + sw.js).
 (() => {
   const { C, svg, ring, star4, face, potF, heartPath } = ART;
 
@@ -67,8 +67,19 @@
     <path d="M24 4A14 14 0 0 0 24 32A20 20 0 0 1 24 4Z" fill="#ffe27a" stroke="#e8a92a" stroke-width="1.2" transform="rotate(-18 24 18)"/>` +
     star4(86, 12, 6, '#fff3c4') + star4(92, 46, 4.5, '#fff') + star4(8, 50, 4.5, '#fff3c4') + star4(74, 30, 3.5, '#fff'));
 
+  // Meadow flower: a Red Poppy with crinkled petals, an inky centre and a nodding bud.
+  const poppy = svg(`<path d="M50 96Q52 76 50 60M50 84Q62 76 70 62Q76 52 74 40" stroke="#6fae5a" stroke-width="3.2" fill="none" stroke-linecap="round"/>
+    <ellipse cx="74" cy="36" rx="6" ry="8.5" fill="#7fbf6a" transform="rotate(30 74 36)"/><path d="M71 30Q74 25 79 28" stroke="#ff4f3a" stroke-width="3" fill="none" stroke-linecap="round"/>
+    ${[[-45, '#e8352a'], [45, '#e8352a'], [-135, '#ff5a40'], [135, '#ff5a40']].map(([a, c]) => `<path d="M50 44C36 40 18 30 22 14C26 2 42 4 50 14C58 4 74 2 78 14C82 30 64 40 50 44Z" fill="${c}" transform="rotate(${a} 50 44) translate(0 -2)"/>`).join('')}
+    ${ring(4, (i, a) => `<path d="M50 30C46 22 46 14 50 8M44 28C38 22 36 16 37 10M56 28C62 22 64 16 63 10" stroke="#ff8a6a" stroke-width="1.6" fill="none" opacity=".7" transform="rotate(${a + 45} 50 44)"/>`)}
+    <circle cx="50" cy="44" r="12" fill="#2a1640"/>
+    ${ring(8, (i, a) => `<path d="M50 44L50 30" stroke="#2a1640" stroke-width="2.4" stroke-linecap="round" transform="rotate(${a} 50 44)"/><circle cx="50" cy="30" r="1.8" fill="#3a1f4f" transform="rotate(${a} 50 44)"/>`)}
+    <circle cx="50" cy="44" r="6" fill="#7fbf6a"/>${ring(6, (i, a) => `<path d="M50 44L50 39" stroke="#3f7a3a" stroke-width="1.4" transform="rotate(${a} 50 44)"/>`)}` +
+    star4(10, 70, 5, '#fff3c4') + star4(90, 84, 4.5, '#fff'));
+
   ART.addShelf({
-    key: 'meadow', name: 'Sunny Meadow', floor: 0xd6f5a0,
+    key: 'meadow', name: 'Poppy Meadow', floor: 0xd6f5a0,
+    flower: { id: 'poppy', name: 'Red Poppy', svg: poppy },
     plants: {
       sunflower:  { name: 'Smiley Sunflower', svg: sunflower, size: 116, r: 55 },
       tulips:     { name: 'Tulip Trio',       svg: tulips },

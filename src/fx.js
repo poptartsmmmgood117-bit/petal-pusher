@@ -27,7 +27,10 @@ Object.assign(Play.prototype, {
     this.dropper.add([ring, this.dropImg, this.chargeG]);
 
     // collection shelf (rebuilt on level up, see shelf.js)
-    this.shelfTitle = txt(this, 60, L.dispTop + 12, '', 38, '#ffffff', { align: 'left', stroke: '#2a1640', strokeThickness: 7 }).setDepth(6);
+    // shelf flower emblem + level name (tap the flower to see its species)
+    this.shelfFlower = this.add.image(84, L.dispTop + 36, 'flower_' + LV.flower().id).setDepth(6).setInteractive({ useHandCursor: true });
+    this.shelfFlower.on('pointerdown', () => { this.fadeOut(this.hintBox); this.hintBox = this.bubble(`🌸 Shelf flower: ${LV.flower().name}`, 300, L.dispTop - 30); haptic(); });
+    this.shelfTitle = txt(this, 122, L.dispTop + 12, '', 38, '#ffffff', { align: 'left', stroke: '#2a1640', strokeThickness: 7 }).setDepth(6);
     this.floorTint = this.add.rectangle(L.W / 2, (L.shelfTop + L.edgeY) / 2, L.shelfR - L.shelfL, L.edgeY - L.shelfTop, 0xffffff, 0).setDepth(0.5);
     this.buildShelf();
 
@@ -164,13 +167,20 @@ Object.assign(Play.prototype, {
     });
     icons.forEach((im, i) => this.tweens.add({ targets: im, y: 622, duration: 700, yoyo: true, repeat: -1, delay: i * 120, ease: 'Sine.easeInOut' }));
     const how = txt(this, L.W / 2, 830, 'Tap to drop a prize\nHold for a BIG surprise box\nPush prizes into the chute to win them!', 32, '#ffffff', { lineSpacing: 14 }).setOrigin(0.5);
-    const rec = txt(this, L.W / 2, 1000, `Best ${Save.data.best}   ·   Lv ${LV.index() + 1} ${LV.title()}  ${LV.foundCount()}/9`, 28, '#c9a8f5').setOrigin(0.5);
+    // level intro: flower emblem, level name, species
+    const fl = LV.flower(), lvName = txt(this, L.W / 2 + 40, 950, `Lv ${LV.index() + 1} · ${LV.title()}`, 40, '#ffffff', { stroke: '#5b2f9e', strokeThickness: 8 }).setOrigin(0.5);
+    this.fitText(lvName, 520);
+    const flImg = this.add.image(lvName.x - lvName.displayWidth / 2 - 46, 948, 'flower_' + fl.id).setScale((76 / 120) * fl.texScale);
+    if (LV.gold()) flImg.setTint(0xfff0b8);
+    this.tweens.add({ targets: flImg, angle: { from: -8, to: 8 }, duration: 900, yoyo: true, repeat: -1, ease: 'Sine.easeInOut' });
+    const rec = txt(this, L.W / 2, 1012, `flower: ${fl.name}   ·   ${LV.foundCount()}/9   ·   Best ${Save.data.best}`, 27, '#c9a8f5').setOrigin(0.5);
+    this.fitText(rec, 600);
     const tip = txt(this, L.W / 2, 1310, '💡 ' + pick(TIPS), 26, '#e9dcff', { wordWrap: { width: 600 } }).setOrigin(0.5);
     const btn = this.add.graphics().fillStyle(0xffd35a, 1).fillRoundedRect(L.W / 2 - 200, 1110, 400, 120, 60)
       .lineStyle(6, 0xffffff, 1).strokeRoundedRect(L.W / 2 - 200, 1110, 400, 120, 60);
     const bt = txt(this, L.W / 2, 1170, 'Tap to Play', 50, '#5b2f9e').setOrigin(0.5);
     this.tweens.add({ targets: bt, scale: 1.07, duration: 600, yoyo: true, repeat: -1, ease: 'Sine.easeInOut' });
-    o.add([dim, t, sub, ...icons, how, rec, btn, bt, tip]);
+    o.add([dim, t, sub, ...icons, how, flImg, lvName, rec, btn, bt, tip]);
     dim.once('pointerup', () => {
       SFX.unlock(); SFX.bonus(); haptic();
       this.tweens.add({ targets: o, alpha: 0, duration: 300, onComplete: () => o.destroy(true) });

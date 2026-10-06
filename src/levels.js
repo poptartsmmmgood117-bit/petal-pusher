@@ -2,17 +2,26 @@
 // The first three are listed here; shelf 4 and up register themselves with ART.addShelf (art4.js, ...).
 // Brand-new shelves always come first, in order. Once she has finished every shelf, they repeat as
 // "Golden" shelves, so there is always a next level.
+// Every shelf has its own name and its own signature flower species (ART.FLOWERS, drawn in art*.js).
+// `was` lists names a shelf had in older versions, so old album entries without a key still match.
 const LEVELS = [
-  { key: 'windowsill', name: 'Windowsill', normals: ['monstera', 'lily', 'succulent', 'pothos', 'candy', 'giftmini'], rare: 'dipper', floor: 0xffffff },
-  { key: 'sunroom', name: 'Sunroom', normals: ['snake', 'cactus', 'orchid', 'fern', 'aloe', 'pearls'], rare: 'bonsai', floor: 0xffe28a },
-  { key: 'secret', name: 'Secret Garden', normals: ['pinkphilo', 'flytrap', 'paradise', 'lavender', 'calathea', 'toadstool'], rare: 'rainbowrose', floor: 0x9be7b4 },
-  ...ART.SHELVES,
+  { key: 'windowsill', name: 'Violet Windowsill', was: ['Windowsill'], flower: 'violet', normals: ['monstera', 'lily', 'succulent', 'pothos', 'candy', 'giftmini'], rare: 'dipper', floor: 0xffffff },
+  { key: 'sunroom', name: 'Hibiscus Sunroom', was: ['Sunroom'], flower: 'hibiscus', normals: ['snake', 'cactus', 'orchid', 'fern', 'aloe', 'pearls'], rare: 'bonsai', floor: 0xffe28a },
+  { key: 'secret', name: 'Secret Rose Garden', was: ['Secret Garden'], flower: 'rose', normals: ['pinkphilo', 'flytrap', 'paradise', 'lavender', 'calathea', 'toadstool'], rare: 'rainbowrose', floor: 0x9be7b4 },
+  ...ART.SHELVES.map(d => ({ ...d, was: { meadow: ['Sunny Meadow'], greenhouse: ['Rainy Greenhouse'] }[d.key] || [] })),
 ];
+LEVELS.forEach((l, i) => {
+  const dupe = LEVELS.findIndex(o => o.name === l.name || o.flower === l.flower) !== i;
+  if (dupe || !ART.FLOWERS[l.flower]) console.error(`shelf ${l.key}: needs a unique name and its own flower species`);
+});
 // The current shelf is saved as Save.data.shelf = { key, gold }. Any LV helper takes a save object (default: hers).
 const LV = {
   index: (sv = Save.data) => sv.level || 0,
   byKey: k => LEVELS.find(l => l.key === k),
-  byName: n => LEVELS.find(l => l.name === String(n || '').replace(/^Golden /, '')),
+  byName(n) {
+    const bare = String(n || '').replace(/^Golden /, '');
+    return LEVELS.find(l => l.name === bare || (l.was || []).includes(bare));
+  },
   // Saves from before shelf keys (or with a key this version doesn't know) use the old 3-shelf rotation.
   cur(sv = Save.data) {
     const d = sv.shelf && LV.byKey(sv.shelf.key);
@@ -45,6 +54,8 @@ const LV = {
   def: sv => LV.cur(sv).def,
   gold: sv => LV.cur(sv).gold,
   title: sv => (LV.gold(sv) ? 'Golden ' : '') + LV.def(sv).name,
+  // This shelf's signature flower: { id, name, texScale }.
+  flower: sv => ({ id: LV.def(sv).flower, ...ART.FLOWERS[LV.def(sv).flower] }),
   normals: () => LV.def().normals,
   rare: () => LV.def().rare,
   setOf: d => [...d.normals, d.rare, 'surprise', 'princess'],

@@ -99,6 +99,22 @@ const ART = (() => {
   };
   const ORDER = ['monstera', 'lily', 'succulent', 'pothos', 'candy', 'giftmini', 'dipper', 'surprise', 'princess'];
 
+  // Shelf flowers: every level has its own signature flower species (an emblem, not a prize).
+  // Shown next to the level name in the HUD, on the title card and on the level-up card. id -> { name, svg }.
+  const FLOWERS = {};
+  const addFlower = (id, name, art) => { if (FLOWERS[id]) console.error(`addFlower ${id}: duplicate id`); else FLOWERS[id] = { name, svg: art }; };
+
+  // Windowsill flower: an African Violet rosette, velvety leaves and a cluster of purple blooms.
+  const violetBloom = (x, y, s) => `<g transform="translate(${x} ${y}) scale(${s})">
+    ${[[-7, -7, 6.5], [7, -7, 6.5], [-9, 5, 8], [9, 5, 8], [0, 10, 8]].map(([a, b, r]) => `<circle cx="${a}" cy="${b}" r="${r}" fill="#8a4fd8"/>`).join('')}
+    ${[[-7, -7, 3.6], [7, -7, 3.6], [-9, 5, 4.6], [9, 5, 4.6], [0, 10, 4.6]].map(([a, b, r]) => `<circle cx="${a * 1.1}" cy="${b * 1.1 - 1}" r="${r}" fill="#b98af5"/>`).join('')}
+    <circle cx="0" cy="1" r="4.6" fill="#f6ecff"/><ellipse cx="-1.8" cy="1" rx="1.8" ry="2.8" fill="${C.gold}"/><ellipse cx="1.8" cy="1" rx="1.8" ry="2.8" fill="${C.gold}"/></g>`;
+  addFlower('violet', 'African Violet', svg(
+    [-70, -35, 0, 35, 70, -52, 52].map((a, i) => `<g transform="rotate(${a} 50 92)"><ellipse cx="50" cy="66" rx="${i < 5 ? 15 : 13}" ry="${i < 5 ? 22 : 19}" fill="${i < 5 ? '#3f8f4f' : '#4fae62'}"/>
+      <ellipse cx="50" cy="64" rx="${i < 5 ? 9 : 7}" ry="${i < 5 ? 14 : 12}" fill="#6fc07c" opacity=".45"/><path d="M50 88L50 50" stroke="#2a6a38" stroke-width="2" stroke-linecap="round"/></g>`).join('') +
+    violetBloom(30, 44, 1.15) + violetBloom(70, 42, 1.15) + violetBloom(50, 24, 1.3) +
+    star4(10, 12, 6, '#fff3c4') + star4(90, 14, 4.5, '#fff')));
+
   const loadImg = (svgStr, w, h) => new Promise((res, rej) => {
     const img = new Image();
     img.onload = () => res(img);
@@ -149,6 +165,11 @@ const ART = (() => {
       scene.textures.addCanvas('item_' + id, st.canvas);
       it.texScale = 1 / RES; // sprite scale to show `size` world units (+ border)
     });
+    for (const [id, f] of Object.entries(FLOWERS)) jobs.push(loadImg(f.svg, Math.round(120 * RES), Math.round(120 * RES)).then(img => {
+      const st = sticker(img, Math.round(120 * RES), 5 * RES, 1.6 * RES);
+      scene.textures.addCanvas('flower_' + id, st.canvas);
+      f.texScale = 1 / RES; // shows 120 world units
+    }));
     jobs.push(loadImg(BG.svg, BG.w * RES, BG.h * RES).then(img => {
       const c = document.createElement('canvas'); c.width = BG.w * RES; c.height = BG.h * RES;
       c.getContext('2d').drawImage(img, 0, 0, c.width, c.height);
@@ -167,14 +188,16 @@ const ART = (() => {
   }
 
   // Shelf pipeline for shelf 4 and up (art4.js, art5.js, ...): one call adds 7 stickers and the level.
-  //   ART.addShelf({ key, name, floor, plants: { id: { name, svg }, ...6 }, rare: { id: { name, svg } } })
+  //   ART.addShelf({ key, name, floor, flower: { id, name, svg }, plants: { id: { name, svg }, ...6 }, rare: { id: { name, svg } } })
+  // flower is the shelf's own signature species (see FLOWERS); it must not be used by any other shelf.
   // Optional per item: size, r (circle body) or body: 'rect' + w, h. levels.js picks the shelves up in load order.
   const SHELVES = [];
-  function addShelf({ key, name, floor = 0xffffff, plants = {}, rare = {} }) {
+  function addShelf({ key, name, floor = 0xffffff, flower, plants = {}, rare = {} }) {
     const pIds = Object.keys(plants), rIds = Object.keys(rare), ids = [...pIds, ...rIds];
     const clash = ids.find(id => ITEMS[id] || !(plants[id] || rare[id]).svg);
     const bad = pIds.length !== 6 ? 'needs exactly 6 plants' : rIds.length !== 1 ? 'needs exactly 1 rare'
-      : SHELVES.some(s => s.key === key) ? 'duplicate key' : clash ? `"${clash}" is taken or has no svg` : '';
+      : SHELVES.some(s => s.key === key) ? 'duplicate key' : clash ? `"${clash}" is taken or has no svg`
+      : !flower || !flower.svg || !flower.name ? 'needs a flower { id, name, svg }' : FLOWERS[flower.id] ? `flower "${flower.id}" is taken` : '';
     if (bad) { console.error(`addShelf ${key}: ${bad} (shelf skipped)`); return; }
     for (const id of ids) {
       const { svg: art, ...d } = plants[id] || rare[id];
@@ -183,9 +206,10 @@ const ART = (() => {
         : { size: 114, body: 'circle', r: 54, pts: 10, refund: 1, ...d };
       ORDER.push(id);
     }
-    SHELVES.push({ key, name, floor, normals: pIds, rare: rIds[0] });
+    addFlower(flower.id, flower.name, flower.svg);
+    SHELVES.push({ key, name, floor, flower: flower.id, normals: pIds, rare: rIds[0] });
   }
 
-  const api = { C, S, ITEMS, ORDER, SHELVES, addShelf, build, heartPath, svg, star4, ring, face, eye, RES: 1 };
+  const api = { C, S, ITEMS, ORDER, SHELVES, FLOWERS, addShelf, addFlower, build, heartPath, svg, star4, ring, face, eye, RES: 1 };
   return api;
 })();

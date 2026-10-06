@@ -1,4 +1,4 @@
-// Petal Pusher art, shelf 5 "Rainy Greenhouse": original hand-authored SVG stickers (see CREDITS.md).
+// Petal Pusher art, shelf 5 "Fuchsia Greenhouse": original hand-authored SVG stickers (see CREDITS.md).
 (() => {
   const { C, svg, star4, face, eye, potF, heartPath } = ART;
   const heart = (x, y, s, fill, extra = '') => `<g transform="translate(${x} ${y}) scale(${s})"><path d="${heartPath}" fill="${fill}" ${extra}/></g>`;
@@ -62,8 +62,23 @@
     bell(41, 54, 1.7, 4) + bell(50, 28, 1.5, -6) + bell(66, 16, 1.3, -16) +
     star4(14, 14, 7, '#fff3c4') + star4(90, 34, 5.5, '#fff') + star4(84, 86, 5, '#fff3c4'));
 
+  // Greenhouse flower: Fuchsia, two dangling ballerina blooms (pink sepals, purple skirts) like raindrops.
+  const ballerina = (x, y, s, a) => `<g transform="translate(${x} ${y}) rotate(${a}) scale(${s})">
+    <path d="M0 -14L0 -4" stroke="#7a3a5a" stroke-width="1.8"/><ellipse cx="0" cy="-1" rx="4.5" ry="5" fill="#ff4f8a"/>
+    <path d="M-2 2C-10 2 -18 -4 -20 -12C-12 -8 -6 -4 -2 0Z" fill="#ff4f8a"/><path d="M2 2C10 2 18 -4 20 -12C12 -8 6 -4 2 0Z" fill="#ff4f8a"/>
+    <path d="M-1 2C-6 6 -8 4 -10 -2" stroke="#ff7aa8" stroke-width="3.4" fill="none" stroke-linecap="round"/><path d="M1 2C6 6 8 4 10 -2" stroke="#ff7aa8" stroke-width="3.4" fill="none" stroke-linecap="round"/>
+    <path d="M-9 4C-11 14 -9 20 -6 22Q-3 18 0 22Q3 18 6 22C9 20 11 14 9 4Z" fill="#7b3fd1"/><path d="M-4 4C-5 12 -4 18 -2 20" stroke="#a57ff5" stroke-width="2" fill="none" stroke-linecap="round"/>
+    <path d="M-3 21L-4 32M0 21L0 34M3 21L4 32" stroke="#ff8fc8" stroke-width="1.2"/>${[[-4, 32], [0, 34], [4, 32]].map(([a, b]) => `<circle cx="${a}" cy="${b}" r="1.4" fill="#fff3c4"/>`).join('')}</g>`;
+  const fuchsia = svg(`<path d="M6 30C30 6 70 6 94 26" stroke="#7a3a5a" stroke-width="3.4" fill="none" stroke-linecap="round"/>
+    ${[[18, 18, -30], [40, 10, -10], [62, 10, 12], [84, 18, 32]].map(([x, y, a]) => `<ellipse cx="${x}" cy="${y}" rx="9" ry="4.2" fill="${C.leaf}" transform="rotate(${a} ${x} ${y})"/>`).join('')}
+    <path d="M30 16L30 26M68 14L68 28" stroke="#7a3a5a" stroke-width="1.8"/>` +
+    ballerina(30, 40, 1.35, 6) + ballerina(68, 42, 1.45, -6) +
+    `<path d="M50 70C50 70 44 78 44 82A6 6 0 0 0 56 82C56 78 50 70 50 70Z" fill="#8fd0ff" opacity=".8"/>` +
+    star4(10, 70, 5, '#fff3c4') + star4(90, 80, 4.5, '#fff'));
+
   ART.addShelf({
-    key: 'greenhouse', name: 'Rainy Greenhouse', floor: 0xa8d8ff,
+    key: 'greenhouse', name: 'Fuchsia Greenhouse', floor: 0xa8d8ff,
+    flower: { id: 'fuchsia', name: 'Fuchsia', svg: fuchsia },
     plants: {
       bleedingheart: { name: 'Bleeding Heart',  svg: bleedingheart },
       bamboo:        { name: 'Lucky Bamboo',    svg: bamboo },

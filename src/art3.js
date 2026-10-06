@@ -1,4 +1,4 @@
-// Petal Pusher art, shelf 3 "Secret Garden": original hand-authored SVG stickers (see CREDITS.md).
+// Petal Pusher art, shelf 3 "Secret Rose Garden": original hand-authored SVG stickers (see CREDITS.md).
 (() => {
   const { C, S, ITEMS, ORDER, svg, ring, star4, face, eye, potF, at } = ART;
 
@@ -63,6 +63,19 @@
     ${ring(5, (i, a) => `<circle cx="50" cy="32" r="11" fill="${RB[(i + 3) % 6]}" stroke="#fff" stroke-width="1.2" stroke-opacity=".6" transform="rotate(${a + 36} 50 46)"/>`)}
     <circle cx="50" cy="46" r="10" fill="#ff8fc8"/><path d="M50 40C56 40 58 46 54 49C50 52 45 49 46 45C47 42 51 42 52 45" stroke="#e2459f" stroke-width="2" fill="none" stroke-linecap="round"/>` +
     star4(12, 14, 6, '#fff3c4') + star4(88, 12, 5, '#fff3c4') + star4(90, 70, 4, '#fff'));
+
+  // Secret Garden flower: a Climbing Rose, a cupped coral bloom and a bud on a thorny arch.
+  const roseLeaf = (x, y, a) => `<g transform="translate(${x} ${y}) rotate(${a})"><path d="M0 0C4-8 14-10 20-6C16 2 8 6 0 0Z" fill="${C.leaf}"/><path d="M0 0L16-5" stroke="${C.leafD}" stroke-width="1.2"/></g>`;
+  ART.addFlower('rose', 'Climbing Rose', svg(`<path d="M8 96C8 50 30 22 56 18C76 15 90 26 92 40" stroke="#4f8a3a" stroke-width="4" fill="none" stroke-linecap="round"/>
+    ${[[14, 70, -60], [24, 44, -40], [80, 22, 30], [90, 46, 70]].map(([x, y, a]) => `<path d="M${x} ${y}l4 -3l-1 5Z" fill="#4f8a3a" transform="rotate(${a} ${x} ${y})"/>`).join('')}
+    ${roseLeaf(12, 80, -100)}${roseLeaf(18, 56, -70)}${roseLeaf(72, 18, -20)}${roseLeaf(86, 34, 30)}
+    <path d="M84 52C80 42 88 36 92 40C96 36 102 46 96 52C93 56 87 56 84 52Z" fill="#ff8aa6"/><path d="M86 54L94 54L90 60Z" fill="${C.leaf}"/>
+    <path d="M22 50C18 30 32 22 50 26C68 22 82 30 78 50C76 70 62 80 50 80C38 80 24 70 22 50Z" fill="#ff6f8f"/>
+    <path d="M26 54C30 72 46 78 50 78C54 78 70 72 74 54C66 66 34 66 26 54Z" fill="#e8476e"/>
+    <path d="M30 42C32 30 44 28 50 32C56 28 68 30 70 42C64 36 56 38 50 44C44 38 36 36 30 42Z" fill="#ff9ab2"/>
+    <path d="M50 58C40 58 38 48 44 44C50 40 58 44 56 50C55 54 50 54 49 51" stroke="#c8325a" stroke-width="3" fill="none" stroke-linecap="round"/>
+    <path d="M36 62C42 68 58 68 64 62" stroke="#c8325a" stroke-width="2.4" fill="none" stroke-linecap="round" opacity=".7"/>` +
+    star4(12, 14, 6, '#fff3c4') + star4(40, 8, 4, '#fff')));
 
   Object.assign(ITEMS, {
     pinkphilo:   { name: 'Pink Princess Leaf', size: 114, body: 'circle', r: 54, pts: 10, refund: 1 },
