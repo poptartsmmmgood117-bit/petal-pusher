@@ -1,4 +1,4 @@
-// Petal Pusher art, shelf 2 "Sunroom": original hand-authored SVG stickers (see CREDITS.md).
+// Petal Pusher art, shelf 2 "Hibiscus Sunroom": original hand-authored SVG stickers (see CREDITS.md).
 (() => {
   const { C, S, ITEMS, ORDER, svg, ring, star4, face } = ART;
   // Pot with optional face; plants sit above y≈50. Shared with art3.js.
@@ -62,6 +62,17 @@
     ${[[52, 14], [66, 22], [78, 30], [20, 40], [34, 44], [46, 24], [62, 12]].map(([x, y]) => `<circle cx="${x}" cy="${y}" r="2.2" fill="#ff9ecf"/>`).join('')}
     <path d="M17 71L83 71L79 92Q78 96 74 96L26 96Q22 96 21 92Z" fill="#7a4bd0"/><rect x="12" y="64" width="76" height="10" rx="5" fill="#a57ff5"/>` +
     face(50, 83.5, 0.82) + star4(10, 14, 6, '#fff3c4') + star4(90, 60, 5, '#fff3c4') + star4(88, 10, 4, '#fff'));
+
+  // Sunroom flower: a big Pink Hibiscus with a long dotted stamen.
+  ART.addFlower('hibiscus', 'Pink Hibiscus', svg(`<ellipse cx="18" cy="78" rx="17" ry="9" fill="${C.leaf}" transform="rotate(-35 18 78)"/>
+    <ellipse cx="82" cy="80" rx="17" ry="9" fill="${C.leafD}" transform="rotate(35 82 80)"/>
+    ${ring(5, (i, a) => `<g transform="rotate(${a + 18} 50 52)"><path d="M50 52C30 44 24 14 40 8C46 5 50 9 50 9C50 9 54 5 60 8C76 14 70 44 50 52Z" fill="#ff7eb6"/>
+      <path d="M50 50C42 40 40 24 44 14M50 50C58 40 60 24 56 14M50 50L50 12" stroke="#ffc0dc" stroke-width="1.6" fill="none" opacity=".8"/></g>`)}
+    <circle cx="50" cy="52" r="11" fill="#d6246e"/><circle cx="50" cy="52" r="6" fill="#a8124f"/>
+    <path d="M50 52Q60 40 70 26" stroke="#fff0f6" stroke-width="3.2" fill="none" stroke-linecap="round"/>
+    ${[[56, 43], [60, 37], [64, 32]].map(([x, y]) => `<circle cx="${x}" cy="${y}" r="2.2" fill="${C.gold}"/>`).join('')}
+    ${[[70, 24], [74, 27], [67, 20]].map(([x, y]) => `<circle cx="${x}" cy="${y}" r="2.6" fill="#e2245f"/>`).join('')}` +
+    star4(12, 14, 6, '#fff3c4') + star4(88, 58, 4.5, '#fff')));
 
   Object.assign(ITEMS, {
     snake:  { name: 'Snake Plant',      size: 114, body: 'circle', r: 53, pts: 10, refund: 1 },

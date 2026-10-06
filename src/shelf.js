@@ -26,6 +26,8 @@ Object.assign(Play.prototype, {
     const set = LV.set();
     set.slice(0, 5).forEach((id, i) => mk(id, 120 + i * 120, L.plank1, 88));
     set.slice(5).forEach((id, i) => mk(id, 135 + i * 150, L.plank2, i >= 2 ? 104 : 92));
+    const fl = LV.flower();
+    this.shelfFlower.setTexture('flower_' + fl.id).setScale((60 / 120) * fl.texScale).setTint(LV.gold() ? 0xfff0b8 : 0xffffff);
     this.floorTint.setFillStyle(LV.gold() ? 0xffd35a : LV.def().floor, LV.index() ? 0.2 : 0);
   },
 
@@ -42,7 +44,7 @@ Object.assign(Play.prototype, {
       if (c) s.pill.fillStyle(0x3a1f4f, 1).fillRoundedRect(-w / 2, -20, w, 40, 20).lineStyle(3, 0xffffff, 1).strokeRoundedRect(-w / 2, -20, w, 40, 20);
     }
     this.shelfTitle.setText(`Lv ${LV.index() + 1} · ${LV.title()}   ${n}/9`);
-    this.fitText(this.shelfTitle, 600);
+    this.fitText(this.shelfTitle, 540);
   },
 
   flyToShelf(id, x) {
@@ -83,7 +85,12 @@ Object.assign(Play.prototype, {
     const bg = this.add.graphics().fillStyle(0xffffff, 0.97).fillRoundedRect(-310, -300, 620, 600, 48)
       .lineStyle(8, 0x9be7b4, 1).strokeRoundedRect(-310, -300, 620, 600, 48);
     const t1 = txt(this, 0, -232, 'Shelf complete! 🎉', 48, '#5b2f9e').setOrigin(0.5);
-    const t2 = txt(this, 0, -164, `Level ${LV.index() + 1}: ${LV.title()}`, 40, '#ff4fa3').setOrigin(0.5);
+    const fl = LV.flower();
+    const t2 = txt(this, 34, -172, `Level ${LV.index() + 1}: ${LV.title()}`, 40, '#ff4fa3').setOrigin(0.5);
+    this.fitText(t2, 470);
+    const flImg = this.add.image(t2.x - t2.displayWidth / 2 - 40, -150, 'flower_' + fl.id).setScale((76 / 120) * fl.texScale);
+    if (LV.gold()) flImg.setTint(0xfff0b8);
+    const tf = txt(this, 34, -122, `shelf flower: ${fl.name}`, 28, '#8e5cd6').setOrigin(0.5);
     const icons = LV.set().map((id, i) => {
       const d = ART.ITEMS[id], row = i < 5 ? 0 : 1, col = row ? i - 5 : i;
       return this.add.image((row ? -157 : -210) + col * 105, -50 + row * 118, 'item_' + id)
@@ -91,7 +98,7 @@ Object.assign(Play.prototype, {
     });
     const t3 = txt(this, 0, 176, `9 new prizes to find!   ♥ +${CFG.levelUpHearts}`, 32, '#3a1f4f').setOrigin(0.5);
     const t4 = txt(this, 0, 238, 'tap to continue', 26, '#8e5cd6').setOrigin(0.5);
-    card.add([bg, t1, t2, ...icons, t3, t4]);
+    card.add([bg, t1, flImg, t2, tf, ...icons, t3, t4]);
     o.add([dim, card]);
     this.tweens.add({ targets: card, scale: 1, alpha: 1, duration: 420, ease: 'Back.easeOut' });
     let done = false;
